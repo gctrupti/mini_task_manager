@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../config/api_config.dart';
 import '../models/task.dart';
 import '../services/api_service.dart';
 import '../widgets/task_card.dart';
@@ -148,91 +147,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _showServerSettingsDialog() {
-    final controller = TextEditingController(text: ApiConfig.baseUrl);
-
-    showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (context, setDialogState) {
-          return AlertDialog(
-            title: const Text('API Server Configuration'),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Select a target environment or enter custom base URL:',
-                    style: TextStyle(fontSize: 12.5),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: controller,
-                    decoration: const InputDecoration(
-                      labelText: 'Server Base URL',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  const Text(
-                    'Quick Presets:',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 6),
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    children: [
-                      ActionChip(
-                        label: const Text('Wi-Fi LAN IP'),
-                        onPressed: () {
-                          setDialogState(() {
-                            controller.text = ApiConfig.physicalDeviceLanUrl;
-                          });
-                        },
-                      ),
-                      ActionChip(
-                        label: const Text('USB (127.0.0.1)'),
-                        onPressed: () {
-                          setDialogState(() {
-                            controller.text = ApiConfig.localhostUrl;
-                          });
-                        },
-                      ),
-                      ActionChip(
-                        label: const Text('Emulator (10.0.2.2)'),
-                        onPressed: () {
-                          setDialogState(() {
-                            controller.text = ApiConfig.androidEmulatorUrl;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Cancel'),
-              ),
-              FilledButton(
-                onPressed: () {
-                  ApiConfig.baseUrl = controller.text.trim();
-                  Navigator.pop(ctx);
-                  _fetchTasks();
-                },
-                child: const Text('Save & Reconnect'),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -268,11 +182,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_ethernet_rounded),
-            tooltip: 'Server Connection Settings',
-            onPressed: _showServerSettingsDialog,
-          ),
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
             tooltip: 'Refresh Task List',
@@ -401,21 +310,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              OutlinedButton.icon(
-                                onPressed: _showServerSettingsDialog,
-                                icon: const Icon(Icons.settings_outlined),
-                                label: const Text('Configure IP'),
-                              ),
-                              const SizedBox(width: 12),
-                              FilledButton.icon(
-                                onPressed: _fetchTasks,
-                                icon: const Icon(Icons.refresh_rounded),
-                                label: const Text('Try Again'),
-                              ),
-                            ],
+                          FilledButton.icon(
+                            onPressed: _fetchTasks,
+                            icon: const Icon(Icons.refresh_rounded),
+                            label: const Text('Try Again'),
                           ),
                         ],
                       ),
