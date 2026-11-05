@@ -61,3 +61,22 @@ def update_task_status(
         )
     return task
 
+@router.delete(
+    "/{id}/",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete a task"
+)
+def delete_task(id: int, db: Session = Depends(get_db)):
+    """
+    Delete a task by primary key ID:
+    - Returns HTTP 204 No Content on successful deletion.
+    - Returns HTTP 404 if the task ID does not exist.
+    """
+    deleted = TaskService.delete_task(db=db, task_id=id)
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Task with ID {id} not found"
+        )
+    return None
+

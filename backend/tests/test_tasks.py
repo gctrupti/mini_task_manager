@@ -144,6 +144,26 @@ def test_patch_invalid_status(client):
     assert response.status_code == 422
 
 
+def test_delete_task_success(client):
+    """DELETE /tasks/{id}/ should delete task and return 204."""
+    create_res = client.post("/tasks/", json={"title": "To Delete", "description": "Will be removed"})
+    task_id = create_res.json()["id"]
+
+    del_res = client.delete(f"/tasks/{task_id}/")
+    assert del_res.status_code == 204
+
+    # Verify task is no longer returned in GET /tasks/
+    get_res = client.get("/tasks/")
+    tasks = get_res.json()
+    assert all(t["id"] != task_id for t in tasks)
+
+
+def test_delete_task_not_found(client):
+    """DELETE /tasks/{id}/ with nonexistent ID should return 404."""
+    del_res = client.delete("/tasks/999999/")
+    assert del_res.status_code == 404
+
+
 def test_docs_and_health(client):
     """Ensure root health and /docs endpoints are functional."""
     health_res = client.get("/")

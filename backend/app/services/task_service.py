@@ -38,3 +38,13 @@ class TaskService:
         db.refresh(task)
         return task
 
+    @staticmethod
+    def delete_task(db: Session, task_id: int) -> bool:
+        """Delete a task by primary key ID. Returns True if deleted, False if not found."""
+        task = db.query(Task).filter(Task.id == task_id).first()
+        if not task:
+            return False
+        db.delete(task)
+        db.commit()
+        return True
+

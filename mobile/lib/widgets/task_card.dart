@@ -6,12 +6,14 @@ import 'status_badge.dart';
 class TaskCard extends StatelessWidget {
   final Task task;
   final VoidCallback onToggleStatus;
+  final VoidCallback onDelete;
   final bool isUpdating;
 
   const TaskCard({
     super.key,
     required this.task,
     required this.onToggleStatus,
+    required this.onDelete,
     this.isUpdating = false,
   });
 
@@ -99,49 +101,61 @@ class TaskCard extends StatelessWidget {
             const Divider(height: 1),
             const SizedBox(height: 8),
 
-            // Action Row: Status Switcher Button
-            Align(
-              alignment: Alignment.centerRight,
-              child: isUpdating
-                  ? const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2.2),
-                      ),
-                    )
-                  : OutlinedButton.icon(
-                      onPressed: onToggleStatus,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: isCompleted
-                            ? const Color(0xFFD97706)
-                            : const Color(0xFF1B873F),
-                        side: BorderSide(
-                          color: isCompleted
+            // Action Row: Delete Button (Left) & Status Switcher Button (Right)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: onDelete,
+                  icon: Icon(
+                    Icons.delete_outline_rounded,
+                    size: 20,
+                    color: theme.colorScheme.error.withValues(alpha: 0.8),
+                  ),
+                  tooltip: 'Delete Task',
+                  visualDensity: VisualDensity.compact,
+                ),
+                isUpdating
+                    ? const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2.2),
+                        ),
+                      )
+                    : OutlinedButton.icon(
+                        onPressed: onToggleStatus,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: isCompleted
                               ? const Color(0xFFD97706)
                               : const Color(0xFF1B873F),
-                          width: 1.2,
+                          side: BorderSide(
+                            color: isCompleted
+                                ? const Color(0xFFD97706)
+                                : const Color(0xFF1B873F),
+                            width: 1.2,
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                        icon: Icon(
+                          isCompleted
+                              ? Icons.undo_rounded
+                              : Icons.check_circle_outline_rounded,
+                          size: 18,
+                        ),
+                        label: Text(
+                          isCompleted ? 'Mark Pending' : 'Mark Completed',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
-                      icon: Icon(
-                        isCompleted
-                            ? Icons.undo_rounded
-                            : Icons.check_circle_outline_rounded,
-                        size: 18,
-                      ),
-                      label: Text(
-                        isCompleted ? 'Mark Pending' : 'Mark Completed',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
+              ],
             ),
           ],
         ),

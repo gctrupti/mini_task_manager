@@ -37,6 +37,7 @@ void main() {
   group('TaskCard Widget Tests', () {
     testWidgets('renders Pending task card with Mark Completed action', (tester) async {
       bool toggleCalled = false;
+      bool deleteCalled = false;
       final task = Task(
         id: 1,
         title: 'Complete Mobile App',
@@ -53,6 +54,9 @@ void main() {
               onToggleStatus: () {
                 toggleCalled = true;
               },
+              onDelete: () {
+                deleteCalled = true;
+              },
             ),
           ),
         ),
@@ -62,9 +66,13 @@ void main() {
       expect(find.text('Test all endpoints thoroughly'), findsOneWidget);
       expect(find.text('Pending'), findsOneWidget);
       expect(find.text('Mark Completed'), findsOneWidget);
+      expect(find.byIcon(Icons.delete_outline_rounded), findsOneWidget);
 
       await tester.tap(find.text('Mark Completed'));
       expect(toggleCalled, isTrue);
+
+      await tester.tap(find.byIcon(Icons.delete_outline_rounded));
+      expect(deleteCalled, isTrue);
     });
 
     testWidgets('renders Completed task card with Mark Pending action', (tester) async {
@@ -85,6 +93,7 @@ void main() {
               onToggleStatus: () {
                 toggleCalled = true;
               },
+              onDelete: () {},
             ),
           ),
         ),

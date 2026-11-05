@@ -193,4 +193,35 @@ class ApiService {
       throw ApiException('Failed to update task status: $e');
     }
   }
+
+  /// DELETE /tasks/{id}/ - Remove a task
+  Future<void> deleteTask(int id) async {
+    try {
+      final response = await http
+          .delete(Uri.parse(ApiConfig.taskDetailEndpoint(id)))
+          .timeout(_timeout);
+
+      switch (response.statusCode) {
+        case 200:
+        case 204:
+          return;
+        case 404:
+          throw ApiException('Task #$id does not exist on the server (HTTP 404).', 404);
+        case 500:
+          throw ApiException('Internal server error (HTTP 500) while deleting task.', 500);
+        default:
+          throw ApiException(
+            'Failed to delete task (HTTP ${response.statusCode})',
+            response.statusCode,
+          );
+      }
+    } on SocketException catch (_) {
+      throw ApiException('Cannot reach backend server to delete task #$id.');
+    } on TimeoutException {
+      throw ApiException('Task deletion request timed out.');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Failed to delete task: $e');
+    }
+  }
 }

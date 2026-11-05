@@ -10,6 +10,7 @@ The application satisfies every core requirement of the technical assignment:
 - **View All Tasks**: Real-time task dashboard with summary counters (Total, Pending, Completed).
 - **Add Tasks**: Form with mandatory title validation and optional description.
 - **Status Management**: Seamlessly toggle between **Pending** and **Completed** with instant UI updates and SQLite persistence.
+- **Delete Tasks**: Remove unwanted or obsolete tasks with confirmation dialogue and backend synchronization.
 - **Pull-to-Refresh**: Swipe to sync with the backend server.
 - **Persistence Across Restarts**: All records remain intact in SQLite after closing or restarting the app.
 
@@ -38,7 +39,7 @@ mini_task_manager/
 │   │   └── services/
 │   │       └── task_service.py  # Business logic & database transactions
 │   ├── tests/
-│   │   └── test_tasks.py        # Pytest test suite (11 test cases)
+│   │   └── test_tasks.py        # Pytest test suite (13 test cases)
 │   ├── test_qa_scenario.py      # End-to-end 10-step QA scenario test
 │   ├── requirements.txt         # Dependencies
 │   └── README.md
@@ -75,6 +76,7 @@ mini_task_manager/
 | `GET` | `/tasks/` | Retrieve all tasks | *None* | `200 OK` |
 | `POST` | `/tasks/` | Create a new task (Pending) | `{"title": "...", "description": "..."}` | `201 Created` |
 | `PATCH` | `/tasks/{id}/` | Update task status | `{"status": "Completed"}` | `200 OK` |
+| `DELETE` | `/tasks/{id}/` | Delete task | *None* | `200 OK` |
 
 Interactive Swagger documentation is available at `http://127.0.0.1:8000/docs` while the backend is running.
 
